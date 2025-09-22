@@ -1,0 +1,5 @@
+networkx>=3.0
+numpy>=1.23
+pandas>=2.0
+# PyTorch 为可选依赖，仅在启用 GPU 加速时需要
+# torch>=1.13

@@ -1,8 +1,5 @@
-简化后的程序，主要实现单一网络的公共物品博弈（PGG）
-
-主程序为PGG_A的“if __name__ == '__main__':”gaming_models为博弈模型部分，其他为辅助程序
-
-realnets目录下为真实网络数据集
-
-现有GPU配置为一台机器配英伟达T1000 8GB，一台配英伟达A2000 12GB
-
+项目结构已重构为模块化架构：
+1. `pgg_gaming` 目录提供 GPU 加速、网络生成、策略更新和仿真调度等核心功能。
+2. `PGG_A.py` 通过命令行参数驱动仿真，支持 GPU 设备指定、政策导向开关以及结果导出。
+3. `gaming_models.py` 保留旧接口，内部转调新模块，确保历史脚本仍可兼容。 
+4. GPU 功能统一由 `AcceleratorController` 控制，可通过 `--gpu-device` 或 `--force-cpu` 参数切换。 
