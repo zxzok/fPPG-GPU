@@ -148,3 +148,4 @@ def smoothing_net_size_changes(sizes_arr: Iterable[int], maxScale: float = 0.5) 
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]
+
