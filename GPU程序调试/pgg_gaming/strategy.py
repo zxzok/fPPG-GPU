@@ -16,6 +16,7 @@ class StrategyInitializer:
 
     cooperative_probability: float = 0.5
     seed: int | None = None
+    _rng: random.Random = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         self._rng = random.Random(self.seed)
@@ -35,6 +36,7 @@ class StrategyUpdater:
 
     temperature: float = 0.5
     seed: int | None = None
+    _rng: random.Random = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         self._rng = random.Random(self.seed)

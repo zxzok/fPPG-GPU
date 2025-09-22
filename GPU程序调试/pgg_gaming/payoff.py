@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from typing import Iterable, List
 
@@ -25,6 +25,7 @@ class PublicGoodsPayoffCalculator:
 
     investment: float = 1.0
     accelerator: AcceleratorController | None = None
+    _accelerator: AcceleratorController = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         self._accelerator = self.accelerator or AcceleratorController()
