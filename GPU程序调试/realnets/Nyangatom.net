@@ -1,0 +1,368 @@
+*Vertices 91
+1 High
+2 High
+3 High
+4 High
+5 High
+6 High
+7 High
+8 High
+9 High
+10 High
+11 High
+12 High
+13 High
+14 High
+15 High
+16 High
+17 High
+18 High
+19 High
+20 High
+21 High
+22 High
+23 Medium
+24 Medium
+25 Medium
+26 Medium
+27 Medium
+28 Medium
+29 Medium
+30 Medium
+31 Medium
+32 Medium
+33 Medium
+34 Medium
+35 Medium
+36 Medium
+37 Medium
+38 Medium
+39 Medium
+40 Medium
+41 Medium
+42 Medium
+43 Medium
+44 Medium
+45 Medium
+46 Medium
+47 Medium
+48 Medium
+49 Medium
+50 Medium
+51 Medium
+52 Medium
+53 Medium
+54 Medium
+55 Medium
+56 Medium
+57 Medium
+58 Medium
+59 Medium
+60 Medium
+61 Medium
+62 Medium
+63 Medium
+64 Medium
+65 Medium
+66 Medium
+67 Medium
+68 Medium
+69 Medium
+70 Medium
+71 Medium
+72 Medium
+73 Medium
+74 Medium
+75 Medium
+76 Medium
+77 Medium
+78 Medium
+79 Low
+80 Low
+81 Low
+82 Low
+83 Low
+84 Low
+85 Low
+86 Low
+87 Low
+88 Low
+89 Low
+90 Low
+91 Low
+*Edges
+1 23 twoWay
+1 24 twoWay
+1 2 twoWay
+2 8 oneWay
+2 1 twoWay
+41 25 oneWay
+2 6 oneWay
+2 44 twoWay
+3 34 twoWay
+3 13 oneWay
+3 50 oneWay
+3 15 oneWay                        
+4 52 twoWay
+4 65 twoWay
+5 44 twoWay
+5 6 twoWay
+5 45 oneWay
+5 11 oneWay                       
+6 5 twoWay
+6 20 twoWay
+6 87 oneWay
+6 11 twoWay
+7 89 twoWay
+7 12 twoWay
+7 11 twoWay
+8 88 twoWay
+8 11 twoWay
+8 12 twoWay
+42 56 oneWay   
+9 14 twoWay
+9 84 oneWay
+9 19 oneWay
+9 64 oneWay
+10 66 twoWay
+10 22 twoWay
+10 52 oneWay
+11 7 twoWay
+11 6 twoWay
+11 8 twoWay
+12 8 twoWay
+12 7 twoWay
+12 89 oneWay
+13 68 oneWay
+13 8 oneWay
+13 64 oneWay
+14 9 twoWay
+14 8 oneWay
+14 15 twoWay
+15 14 twoWay
+72 50 twoWay  
+15 19 oneWay
+16 19 twoWay
+16 18 oneWay
+16 14 oneWay
+17 18 twoWay
+17 72 oneWay
+18 19 twoWay
+18 17 twoWay
+18 89 oneWay
+19 18 twoWay
+19 16 twoWay                          
+19 8 oneWay                          
+19 14 oneWay
+20 6 twoWay
+20 5 oneWay
+20 11 oneWay
+21 74 twoWay
+21 13 oneWay
+21 14 oneWay
+21 9 oneWay
+22 10 twoWay
+22 66 twoWay
+22 18 oneWay
+23 79 twoWay
+23 1 twoWay
+23 24 oneWay
+24 26 oneWay
+24 1 twoWay                        
+24 2 oneWay
+25 79 oneWay
+25 80 twoWay
+25 45 twoWay
+26 79 oneWay
+26 39 oneWay
+27 1 oneWay
+27 33 oneWay                       
+28 32 twoWay
+28 1 oneWay
+28 2 oneWay
+29 40 twoWay
+29 84 twoWay
+29 27 oneWay
+30 26 oneWay
+30 34 oneWay
+30 52 oneWay
+31 30 oneWay
+31 48 twoWay
+31 34 oneWay
+32 3 oneWay
+32 9 oneWay
+32 28 twoWay
+33 52 oneWay
+33 59 oneWay                      
+34 3 twoWay
+34 4 oneWay
+34 16 oneWay
+35 83 twoWay
+35 54 twoWay
+35 51 oneWay
+36 35 oneWay
+36 10 oneWay
+36 3 oneWay
+37 38 oneWay
+37 3 oneWay
+37 14 oneWay
+38 3 oneWay
+38 31 oneWay
+38 14 oneWay
+39 41 oneWay
+39 88 oneWay
+39 8 oneWay
+40 29 twoWay
+40 2 oneWay
+40 8 oneWay                        
+41 80 oneWay
+41 25 oneWay                      
+42 81 twoWay
+42 12 oneWay
+42 56 oneWay                       
+43 7 oneWay
+43 1 oneWay
+43 5 oneWay
+44 2 twoWay
+44 5 twoWay
+44 6 oneWay
+45 47 twoWay
+45 25 twoWay
+45 80 oneWay
+46 2 twoWay
+46 87 twoWay
+46 44 twoWay
+46 57 twoWay 
+46 80 twoWay                          
+47 45 twoWay
+47 48 oneWay
+47 69 oneWay
+48 31 twoWay
+48 38 oneWay
+48 17 oneWay
+49 15 oneWay
+49 14 oneWay
+49 17 oneWay
+50 18 twoWay
+50 15 oneWay
+50 72 twoWay                       
+51 90 twoWay
+51 4 oneWay
+51 14 oneWay
+52 4 twoWay
+52 9 oneWay
+52 19 oneWay
+52 30 oneWay
+53 4 oneWay
+53 10 oneWay                          
+54 35 twoWay
+54 86 twoWay
+54 18 oneWay
+55 4 oneWay
+55 18 oneWay
+55 10 oneWay
+56 8 oneWay
+56 12 oneWay
+56 15 oneWay
+57 46 twoWay
+57 87 oneWay
+57 60 oneWay
+58 6 oneWay
+58 5 oneWay
+59 89 oneWay
+59 6 oneWay
+59 46 oneWay
+60 70 twoWay
+60 12 oneWay
+60 6 oneWay
+61 11 oneWay
+61 89 twoWay
+62 88 oneWay
+62 8 oneWay
+62 11 oneWay                        
+63 18 oneWay
+63 14 oneWay
+63 13 oneWay
+63 48 oneWay                         
+64 17 oneWay
+64 75 oneWay
+64 55 oneWay
+65 4 twoWay
+65 73 oneWay
+65 14 oneWay
+66 22 twoWay
+66 10 twoWay
+66 54 oneWay
+67 91 twoWay
+67 72 oneWay
+68 69 twoWay
+68 18 oneWay
+68 70 oneWay
+69 68 twoWay
+69 70 oneWay
+70 60 twoWay
+70 6 oneWay
+70 20 oneWay
+71 89 oneWay
+71 12 oneWay
+71 70 oneWay
+72 78 twoWay
+72 21 oneWay
+72 50 twoWay                     
+73 21 oneWay
+73 13 oneWay
+73 16 oneWay
+74 19 oneWay
+74 66 oneWay
+74 21 twoWay
+75 76 twoWay
+75 22 oneWay
+75 15 oneWay
+76 75 twoWay
+76 22 oneWay
+76 14 oneWay
+77 65 oneWay
+77 14 oneWay
+77 75 oneWay
+78 72 twoWay
+78 70 oneWay
+78 58 oneWay
+79 23 twoWay
+79 1 oneWay
+79 24 oneWay
+80 25 twoWay
+80 46 twoWay                       
+80 42 oneWay
+81 80 oneWay
+81 83 twoWay
+81 42 twoWay
+82 31 oneWay
+82 28 oneWay
+82 49 oneWay
+83 50 oneWay
+83 81 twoWay
+83 35 twoWay
+84 29 twoWay
+84 89 oneWay
+84 8 oneWay
+85 82 oneWay
+85 18 oneWay
+85 64 oneWay
+86 18 oneWay
+86 83 oneWay
+86 54 twoWay
+87 46 twoWay
+87 8 oneWay
+87 41 oneWay
+88 8 twoWay
+88 89 oneWay
+88 11 oneWay
+89 7 twoWay
+89 61 twoWay
+89 8 oneWay
+90 51 twoWay
+90 53 oneWay
+90 18 oneWay
+91 67 twoWay
+91 53 oneWay
+91 19 oneWay
