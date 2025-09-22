@@ -6,3 +6,10 @@ realnets目录下为真实网络数据集
 
 现有GPU配置为一台机器配英伟达T1000 8GB，一台配英伟达A2000 12GB
 
+2024年8月GPU加速更新：
+1. gaming_models.calc_profit_PGG 新增基于 PyTorch 的 GPU 版本，检测到可用的 CUDA 设备时自动启用。
+2. 运行开始时主程序会在控制台与日志中输出是否启用了 GPU 加速及所使用的设备。
+3. 支持环境变量控制：设置 `PGG_FORCE_CPU=1` 可强制退回 CPU，`PGG_GPU_DEVICE` 可指定 CUDA 设备（默认 `cuda`）。
+4. 提供 `gaming_models.is_gpu_enabled()` 与 `gaming_models.get_accelerator_device_name()` 接口供脚本内查询；调用 `gaming_models.set_gpu_mode(True/False)` 可手动切换。
+5. 若当前环境未安装 PyTorch 或缺少 GPU，程序会自动降级到原有的 CPU 实现，保持兼容性。
+

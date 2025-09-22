@@ -13,6 +13,7 @@ Last revised on Aug 2024
 """
 
 import datetime
+import os
 import random as rd
 import networkx as nx
 import logging
@@ -32,10 +33,126 @@ from net_visualization import draw_small_gaming_net
 pC = 1    # 合作者向PGG游戏投入的资源份数
 KP = 0.5  # 学习概率
 
+try:
+    import torch
+    _TORCH_AVAILABLE = True
+except ImportError:  # pragma: no cover - optional dependency
+    torch = None
+    _TORCH_AVAILABLE = False
+
+_FORCE_CPU = os.environ.get("PGG_FORCE_CPU", "").lower() in {"1", "true", "yes", "on"}
+_ACCEL_DEVICE = None
+_ACCEL_DEVICE_STR = None
+
+if _TORCH_AVAILABLE and not _FORCE_CPU:
+    requested_device = os.environ.get("PGG_GPU_DEVICE", "cuda")
+    if requested_device.lower() == "auto":
+        requested_device = "cuda"
+
+    if torch.cuda.is_available():
+        try:
+            _ACCEL_DEVICE = torch.device(requested_device)
+            if _ACCEL_DEVICE.type != "cuda":
+                _ACCEL_DEVICE = torch.device("cuda")
+
+            # Allocate a tiny tensor to ensure the device is accessible.
+            torch.zeros(1, device=_ACCEL_DEVICE)
+            _ACCEL_DEVICE_STR = str(_ACCEL_DEVICE)
+        except (RuntimeError, AssertionError) as exc:  # pragma: no cover - hardware dependent
+            logging.getLogger(__name__).warning(
+                "Failed to initialise CUDA device '%s': %s. Falling back to CPU.",
+                requested_device,
+                exc,
+            )
+            _ACCEL_DEVICE = None
+            _ACCEL_DEVICE_STR = None
+    else:
+        logging.getLogger(__name__).info(
+            "CUDA device not available; running in CPU mode.")
+elif _FORCE_CPU:
+    logging.getLogger(__name__).info(
+        "GPU acceleration disabled via PGG_FORCE_CPU environment variable.")
+
+
+def _should_use_accelerator():
+    """Return ``True`` when the tensor-based payoff calculator can run."""
+
+    return _TORCH_AVAILABLE and _ACCEL_DEVICE is not None
+
+
+def set_gpu_mode(enable: bool, device: str | None = None) -> bool:
+    """Enable or disable the GPU accelerated payoff computation.
+
+    Parameters
+    ----------
+    enable:
+        ``True`` to enable GPU acceleration, ``False`` to fall back to the CPU
+        implementation.
+    device:
+        Optional CUDA device string, e.g. ``"cuda:0"``. When omitted the value
+        from the ``PGG_GPU_DEVICE`` environment variable or ``"cuda"`` is used.
+
+    Returns
+    -------
+    bool
+        ``True`` when a CUDA device is active after the call, otherwise ``False``.
+    """
+
+    global _ACCEL_DEVICE, _ACCEL_DEVICE_STR
+
+    if not _TORCH_AVAILABLE:
+        logging.getLogger(__name__).warning(
+            "PyTorch is not installed; GPU mode cannot be enabled.")
+        _ACCEL_DEVICE = None
+        _ACCEL_DEVICE_STR = None
+        return False
+
+    if not enable:
+        _ACCEL_DEVICE = None
+        _ACCEL_DEVICE_STR = None
+        return False
+
+    target_device = device or os.environ.get("PGG_GPU_DEVICE", "cuda")
+
+    try:
+        accel_device = torch.device(target_device)
+        if accel_device.type != "cuda":
+            raise RuntimeError("Only CUDA devices can be used for GPU mode.")
+        if not torch.cuda.is_available():
+            raise RuntimeError("CUDA is not available on this machine.")
+        torch.zeros(1, device=accel_device)
+    except (RuntimeError, AssertionError) as exc:
+        logging.getLogger(__name__).warning(
+            "Failed to enable GPU mode on device '%s': %s",
+            target_device,
+            exc,
+        )
+        _ACCEL_DEVICE = None
+        _ACCEL_DEVICE_STR = None
+        return False
+
+    _ACCEL_DEVICE = accel_device
+    _ACCEL_DEVICE_STR = str(accel_device)
+    return True
+
+
+def is_gpu_enabled() -> bool:
+    """Return ``True`` when GPU acceleration is currently active."""
+
+    return _should_use_accelerator()
+
+
+def get_accelerator_device_name() -> str:
+    """Return the name of the device used for accelerated payoff calculation."""
+
+    if _should_use_accelerator():
+        return _ACCEL_DEVICE_STR or str(_ACCEL_DEVICE)
+    return "cpu"
+
 
 #计算一个网络中的合作者比例
 def calc_C_num(net):
-    
+
     countC = 0
     for node in net.nodes():
         if net.nodes[node]['select']==1:
@@ -125,15 +242,96 @@ def init_game_strategy( net ):
 
 def calc_profit_PGG(net, r):
 
-    # 清空收益
+    logger = logging.getLogger(__name__)
+
+    if _should_use_accelerator():
+        try:
+            _calc_profit_PGG_gpu(net, r)
+            return
+        except Exception:  # pragma: no cover - fallback safety
+            logger.exception(
+                "GPU payoff computation failed; falling back to CPU implementation.")
+
+    _calc_profit_PGG_cpu(net, r)
+
+
+def _calc_profit_PGG_cpu(net, r):
+
     for node in net.nodes():
         net.nodes[node]['profit'] = 0
 
     for node in net.nodes():
         neighbors = list(net.neighbors(node))
-        play_in_PGG( net, node, neighbors, r)
-    
-    return
+        play_in_PGG(net, node, neighbors, r)
+
+
+def _calc_profit_PGG_gpu(net, r):
+
+    if torch is None or _ACCEL_DEVICE is None:
+        raise RuntimeError("GPU acceleration is not available.")
+
+    nodes = list(net.nodes())
+    if not nodes:
+        return
+
+    node_index = {node: idx for idx, node in enumerate(nodes)}
+    num_nodes = len(nodes)
+    dtype = torch.float64
+    device = _ACCEL_DEVICE
+
+    edges = list(net.edges())
+
+    if edges:
+        row_idx = []
+        col_idx = []
+        for u, v in edges:
+            iu = node_index[u]
+            iv = node_index[v]
+            row_idx.extend([iu, iv])
+            col_idx.extend([iv, iu])
+
+        indices = torch.tensor([row_idx, col_idx], dtype=torch.long, device=device)
+        values = torch.ones(len(row_idx), dtype=dtype, device=device)
+        adjacency = torch.sparse_coo_tensor(indices, values, (num_nodes, num_nodes))
+        adjacency = adjacency.coalesce()
+    else:
+        indices = torch.zeros((2, 0), dtype=torch.long, device=device)
+        values = torch.zeros((0,), dtype=dtype, device=device)
+        adjacency = torch.sparse_coo_tensor(indices, values, (num_nodes, num_nodes))
+
+    adjacency = adjacency.coalesce()
+
+    select_tensor = torch.tensor(
+        [float(net.nodes[node].get('select', 0)) for node in nodes],
+        dtype=dtype,
+        device=device,
+    )
+
+    ones = torch.ones((num_nodes, 1), dtype=dtype, device=device)
+    degree = torch.sparse.mm(adjacency, ones).squeeze(1)
+    coop_neighbors = torch.sparse.mm(adjacency, select_tensor.unsqueeze(1)).squeeze(1)
+    coop_count = coop_neighbors + select_tensor
+    group_size = degree + 1.0
+    group_size = torch.clamp(group_size, min=1.0)
+
+    r_tensor = torch.tensor(float(r), dtype=dtype, device=device)
+    pC_tensor = torch.tensor(float(pC), dtype=dtype, device=device)
+
+    profit_avg = r_tensor * pC_tensor * coop_count / group_size
+    base_contrib = profit_avg - pC_tensor * select_tensor
+    neighbor_contrib = (
+        torch.sparse.mm(adjacency, profit_avg.unsqueeze(1)).squeeze(1)
+        - degree * pC_tensor * select_tensor
+    )
+
+    profit_total = base_contrib + neighbor_contrib
+
+    profit_dict = {
+        node: float(value)
+        for node, value in zip(nodes, profit_total.detach().cpu().numpy())
+    }
+
+    nx.set_node_attributes(net, profit_dict, 'profit')
 
 # ——————————————————————————————————————
 # 计算单个节点node与内部邻居neighbors博弈的收益和，采用公共品博弈

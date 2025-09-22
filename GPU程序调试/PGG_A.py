@@ -24,7 +24,14 @@ import logging
 import time
 from collections import Counter
 
-from gaming_models import calc_C_num, calc_profit_PGG, game_stra_learn, game_stra_learn_withPrefer
+from gaming_models import (
+    calc_C_num,
+    calc_profit_PGG,
+    game_stra_learn,
+    game_stra_learn_withPrefer,
+    get_accelerator_device_name,
+    is_gpu_enabled,
+)
 
 from net_creat import  creat_Net
 
@@ -634,10 +641,22 @@ def main_single_net(netType_i, DynamicNum_arr, del_way_i, inc_stra_i, KP_i, k_i,
 if __name__ == '__main__':
          
     multiprocessing.freeze_support()
-         
+
     date_time_1 = datetime.datetime.now()
     print("Gaming Started at " + str(date_time_1) + "!!\n")
-   
+
+    if is_gpu_enabled():
+        gpu_message = (
+            "GPU加速已启用，收益计算将在 "
+            + get_accelerator_device_name()
+            + " 上运行。"
+        )
+    else:
+        gpu_message = "GPU加速不可用，将使用CPU版本的收益计算。"
+
+    print(gpu_message + "\n")
+    logging.info(gpu_message)
+
     sizes = [100]    # 30, 60, 30
     r_range = [1, 5, 0.1]
     alpha_range = [0, 0.5, 0.01]
