@@ -1,15 +1,5 @@
-简化后的程序，主要实现单一网络的公共物品博弈（PGG）
-
-主程序为PGG_A的“if __name__ == '__main__':”gaming_models为博弈模型部分，其他为辅助程序
-
-realnets目录下为真实网络数据集
-
-现有GPU配置为一台机器配英伟达T1000 8GB，一台配英伟达A2000 12GB
-
-2024年8月GPU加速更新：
-1. gaming_models.calc_profit_PGG 新增基于 PyTorch 的 GPU 版本，检测到可用的 CUDA 设备时自动启用。
-2. 运行开始时主程序会在控制台与日志中输出是否启用了 GPU 加速及所使用的设备。
-3. 支持环境变量控制：设置 `PGG_FORCE_CPU=1` 可强制退回 CPU，`PGG_GPU_DEVICE` 可指定 CUDA 设备（默认 `cuda`）。
-4. 提供 `gaming_models.is_gpu_enabled()` 与 `gaming_models.get_accelerator_device_name()` 接口供脚本内查询；调用 `gaming_models.set_gpu_mode(True/False)` 可手动切换。
-5. 若当前环境未安装 PyTorch 或缺少 GPU，程序会自动降级到原有的 CPU 实现，保持兼容性。
-
+项目结构已重构为模块化架构：
+1. `pgg_gaming` 目录提供 GPU 加速、网络生成、策略更新和仿真调度等核心功能。
+2. `PGG_A.py` 通过命令行参数驱动仿真，支持 GPU 设备指定、政策导向开关以及结果导出。
+3. `gaming_models.py` 保留旧接口，内部转调新模块，确保历史脚本仍可兼容。 
+4. GPU 功能统一由 `AcceleratorController` 控制，可通过 `--gpu-device` 或 `--force-cpu` 参数切换。 
