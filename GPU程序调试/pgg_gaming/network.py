@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 import random
 from typing import Iterable, List
@@ -17,6 +17,7 @@ class NetworkFactory:
     """根据配置生成不同拓扑类型的网络。"""
 
     seed: int | None = None
+    _random: random.Random = field(init=False, repr=False)
 
     def __post_init__(self) -> None:  # 初始化随机数发生器
         self._random = random.Random(self.seed)
